@@ -31,7 +31,12 @@ const Register = () => {
         emailRef.current,
         passwordRef.current 
       );
-  }
+      setIsLoading(false);
+      console.log("register result:", res);
+      if(!res.success){
+        Alert.alert("Sign up", res.msg);
+      }
+  };
 
   return (
     <ScreenWrapper>

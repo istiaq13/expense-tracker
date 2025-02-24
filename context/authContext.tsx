@@ -9,12 +9,14 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 const AuthContext = createContext<AuthContextType | null>(null);
 
 // Provider component
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children, }) => {
   const [user, setUser] = useState<UserType | null>(null);
   const router = useRouter();
 
   useEffect(()=>{
     const unsub = onAuthStateChanged(auth, (firebaseUser) => {
+
+        console.log("firebase user: ", firebaseUser);
       if (firebaseUser) {
         setUser({
           uid: firebaseUser?.uid,
@@ -22,7 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           name: firebaseUser?.displayName,
         });
         updateUserData(firebaseUser.uid);
-        router.replace("/login"); //tab dioye change jhbe
+        router.replace("/(tabs)");
       }else {
         //no user
         setUser(null);
@@ -38,8 +40,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await signInWithEmailAndPassword(auth, email, password);
       return { success: true };
+      //router.navigate("/(tabs)/profile");
     } catch (error: any) {
       let msg = error.message;
+      console.log("error message: ", msg);
+      if(msg.includes("(auth/invalid-credentials)")) msg = "Wrong Credentials";
+      if(msg.includes("(auth/invalid-email)")) msg = "Invalid Email";
       return { success: false, msg };
     }
   };
@@ -53,10 +59,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         name,
         email,
       });
-
       return { success: true };
     } catch (error: any) {
       let msg = error.message;
+      console.log("error message: ", msg);
+      if(msg.includes("(auth/email-already-in-use)")) msg = "This email is already in use";
+      //if(msg.includes("(auth/invalid-credentials)")) msg = "Wrong Credentials";
       return { success: false, msg };
     }
   };
@@ -78,6 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser({ ...userData });
       }
     } catch (error: any) {
+      let msg = error.message;
       console.log("Error fetching user data:", error);
     }
   };
