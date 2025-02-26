@@ -1,19 +1,19 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
-import ScreenWrapper from '@/components/ScreenWrapper';
-import { colors, radius, spacingX, spacingY } from '@/constants/theme';
-import { verticalScale } from '@/utils/styling';
-import Header from '@/components/Header';
-import { useAuth } from '@/context/authContext';
-import Typo from '@/components/Typo';
-import { Image } from 'expo-image';
-import { getProfileImage } from '@/services/imageService';
-import * as Icons from 'phosphor-react-native';
-import { accountOptionType } from '@/types';
-import Animated, { FadeInDown } from 'react-native-reanimated';
-import { signOut } from 'firebase/auth';
-import { auth } from '@/config/firebase';
-import { useRouter } from 'expo-router';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React from 'react'
+import ScreenWrapper from '@/components/ScreenWrapper'
+import { colors, radius, spacingX, spacingY } from '@/constants/theme'
+import { verticalScale } from '@/utils/styling'
+import Header from '@/components/Header'
+import { useAuth } from '@/context/authContext'
+import Typo from '@/components/Typo'
+import { Image } from 'expo-image'
+import { getProfileImage } from '@/services/imageService'
+import * as Icons from 'phosphor-react-native'
+import { accountOptionType } from '@/types'
+import Animated, { FadeInDown } from 'react-native-reanimated'
+import { signOut } from 'firebase/auth'
+import { auth } from '@/config/firebase'
+import { useRouter } from 'expo-router'
 
 const Profile = () => {
   const { user } = useAuth();
@@ -29,51 +29,51 @@ const Profile = () => {
     {
       title: "Settings",
       icon: <Icons.GearSix size={26} color={colors.white} weight="fill" />,
-      //routeName: '/(modals)/profileModal',
+      //routeName: '/(models)/profileModal',
       bgColor: "#059669",
     },
     {
       title: "Privacy Policy",
       icon: <Icons.Lock size={26} color={colors.white} weight="fill" />,
-      //routeName: '/(modals)/profileModal',
+      //routeName: '/(models)/profileModal',
       bgColor: colors.neutral600,
     },
     {
       title: "Logout",
       icon: <Icons.Power size={26} color={colors.white} weight="fill" />,
-      //routeName: '/(modals)/profileModal',
+      //routeName: '/(models)/profileModal',
       bgColor: "#e11d48",
     },
   ];
 
   const handleLogout = async () => {
-    await signOut(auth);
-  };
+      await signOut(auth);
+    };
 
-  const showLogoutAlert = () => {
-    Alert.alert(
-      "Are You Sure You Want To Logout?", "",
-      [
-        {
-          text: "Cancel",
-          onPress: () => console.log("Cancel Logout"),
-          style: "cancel",
-        },
-        {
-          text: "Logout",
-          onPress: () => handleLogout(),
-          style: "destructive",
-        },
-      ]
-    );
-  };
+    const showLogoutAlert = () => {
+      Alert.alert(
+        "Are You Sure You Want To Logout?", "",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Logout"),
+            style: "cancel",
+          },
+          {
+            text: "Logout",
+            onPress: () => handleLogout(),
+            style: "destructive",
+          },
+        ]
+      );
+    };    
 
   const handlePress = (item: accountOptionType) => {
-    if (item.title == 'Logout') {
-      showLogoutAlert();
+    if(item.title == 'Logout'){
+        showLogoutAlert();
     }
 
-    if (item.routeName) router.push(item.routeName);
+    if(item.routeName) router.push(item.routeName);
   };
 
   return (
@@ -84,14 +84,15 @@ const Profile = () => {
         {/* user info */}
         <View style={styles.userInfo}>
           {/* avatar */}
+          {/*<View style={styles.avatarContainer}><View style={styles.avatar}/></View>*/}
           <View>
-            {/* user image */}
-            <Image
+             {/* user image */}
+             <Image
               source={getProfileImage(user?.image)}
               style={styles.avatar}
               contentFit="cover"
               transition={100}
-            />
+             />
           </View>
           {/* name and email */}
           <View style={styles.nameContainer}>
@@ -109,13 +110,13 @@ const Profile = () => {
           {accountOptions.map((item, index) => {
             return (
               <Animated.View
-                key={index.toString()}
-                entering={FadeInDown.delay(index * 50)
-                  .springify()
-                  .damping(14)}
-                style={styles.listItem}
+               key={index.toString()}
+               entering={FadeInDown.delay(index*50)
+               .springify()
+               .damping(14)}
+               style={styles.listItem}
               >
-                <TouchableOpacity style={styles.flexRow} onPress={() => handlePress(item)}>
+                <TouchableOpacity style={styles.flexRow} onPress={()=> handlePress(item)}>
                   {/* icon */}
                   <View
                     style={[
@@ -127,14 +128,14 @@ const Profile = () => {
                   >
                     {item.icon && item.icon}
                   </View>
-                  <Typo size={16} style={{ flex: 1 }} fontWeight={"500"}>
+                  <Typo size={16} style={{ flex:1 }} fontWeight={"500"}>
                     {item.title}
                   </Typo>
                   <Icons.CaretRight
                     size={verticalScale(20)}
                     weight="bold"
                     color={colors.white}
-                  />
+                  />  
                 </TouchableOpacity>
               </Animated.View>
             )
@@ -145,7 +146,7 @@ const Profile = () => {
   )
 }
 
-export default Profile;
+export default Profile
 
 const styles = StyleSheet.create({
   container: {
@@ -188,11 +189,11 @@ const styles = StyleSheet.create({
   listIcon: {
     height: verticalScale(44),
     width: verticalScale(44),
-    backgroundColor: colors.neutral500,
+    backgroundColor: colors.neutral500, // Fixed typo here
     alignItems: "center",
     justifyContent: "center",
     borderRadius: radius._15,
-    borderCurve: "continuous",
+    borderCurve: "continuous", // Fixed typo here
   },
   listItem: {
     marginBottom: verticalScale(17),
@@ -205,4 +206,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: spacingX._10,
   }
-});
+})
