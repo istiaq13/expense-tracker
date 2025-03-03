@@ -14,14 +14,13 @@ import { UserDataType, WalletType } from '@/types'
 import Input from '@/components/Input'
 import Button from '@/components/Button'
 import { useAuth } from '@/context/authContext'
-import { updateUser } from '@/services/userService'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker';
 import ImageUpload from '@/components/ImageUpload';
 import { createOrUpdateWallet, deleteWallet } from '@/services/walletService'
 
 const ProfileModal = () => {
-    const { user,updateUserData } = useAuth();
+    const { user, updateUserData } = useAuth();
     const [wallet, setWallet] = useState<WalletType>({
         name: "",
         image: null,
@@ -72,7 +71,7 @@ const ProfileModal = () => {
         if(res.success){
             router.back();
         }else{
-            Alert.alert("wallet", res.msg);
+            Alert.alert("Wallet", res.msg);
         }
     };
 
@@ -82,7 +81,7 @@ const ProfileModal = () => {
             "Are you sure you want to delete this item?", 
             [
                 { text: "No", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
-                { text: "Yes", onPress: () => console.log("Deleted") }
+                { text: "Yes", onPress: onDelete }
             ]
         );
     };
