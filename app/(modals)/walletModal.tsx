@@ -15,10 +15,10 @@ import Input from '@/components/Input'
 import Button from '@/components/Button'
 import { useAuth } from '@/context/authContext'
 import { updateUser } from '@/services/userService'
-import { useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import * as ImagePicker from 'expo-image-picker';
 import ImageUpload from '@/components/ImageUpload';
-import { createOrUpdateWallet } from '@/services/walletService'
+import { createOrUpdateWallet, deleteWallet } from '@/services/walletService'
 
 const ProfileModal = () => {
     const { user,updateUserData } = useAuth();
@@ -28,6 +28,17 @@ const ProfileModal = () => {
     });
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+
+    const oldWallet: {name: string, image: string, id: string} = useLocalSearchParams();
+
+    useEffect(() => {
+        if (oldWallet?.id) {
+            setWallet({
+                name: oldWallet?.name,
+                image: oldWallet?.image
+            });
+        }
+    }, []);
 
     const onSubmit = async () => {
         let { name, image } = wallet;
@@ -41,7 +52,8 @@ const ProfileModal = () => {
             image,
             uid: user?.uid
         };
-        //todo
+       
+        if(oldWallet?.id) data.id = oldWallet?.id;
         setLoading(true);
         const res = await createOrUpdateWallet(data);
         setLoading(false);
@@ -51,12 +63,36 @@ const ProfileModal = () => {
             Alert.alert("Wallet", res.msg);
         }
     };
+    
+    const onDelete = async () => {
+        if(!oldWallet?.id) return;
+        setLoading(true);
+        const res = await deleteWallet(oldWallet?.id);
+        setLoading(false);
+        if(res.success){
+            router.back();
+        }else{
+            Alert.alert("wallet", res.msg);
+        }
+    };
+
+    const showDeleteAlert = () => {
+        Alert.alert(
+            "Want to delete?", 
+            "Are you sure you want to delete this item?", 
+            [
+                { text: "No", onPress: () => console.log("Cancel Pressed"), style: "cancel" },
+                { text: "Yes", onPress: () => console.log("Deleted") }
+            ]
+        );
+    };
+    
 
   return (
     <ModalWrapper>
       <View style={styles.container}>
         <Header 
-        title="New Wallet" 
+        title={oldWallet?.id ? "Update Wallet" : "New Wallet"} 
         leftIcon={<BackButton/>} 
         style={{marginTop: spacingY._10}}
         />
@@ -86,9 +122,26 @@ const ProfileModal = () => {
       </View>
 
       <View style={styles.footer}>
+        {
+             oldWallet?.id && !loading && (
+                <Button
+                    onPress={showDeleteAlert}
+                    style={{
+                        backgroundColor: colors.rose,
+                        paddingHorizontal: spacingX._15,
+                    }}
+                >
+                    <Icons.Trash
+                        color={colors.white}
+                        size={verticalScale(24)}
+                        weight="bold"
+                    />    
+                </Button>    
+            )
+        }
       <Button onPress={onSubmit} loading={loading} style={{ flex: 1 }}>
             <Typo color={colors.black} fontWeight={"700"}>
-                    Add Wallet
+                 {oldWallet?.id ? "Update Wallet" : "Add Wallet"}
             </Typo>
         </Button>
       </View>
