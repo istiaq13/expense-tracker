@@ -10,7 +10,7 @@ const ScreenWrapper = ({ style, children }: ScreenWrapperProps) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+      <StatusBar translucent backgroundColor={colors.neutral900} barStyle="light-content" />
       <View style={[styles.container, { paddingTop }, style]}>
         {children}
       </View>
